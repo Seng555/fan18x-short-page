@@ -1,12 +1,17 @@
 // page
-import { use } from 'react';
+import { Usable, use } from 'react';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { useTranslations } from 'next-intl';
 import VideoScroller from '@/components/VideoScroller';
 import { Metadata } from 'next';
 export const runtime = 'edge';
 
-export async function generateMetadata({ params }: any): Promise<Metadata> {
+// --- Types ---
+type PageParams = {
+  locale: string;
+};
+
+export async function generateMetadata({ params }: { params: PageParams }): Promise<Metadata> {
   // ต้อง await params
   const resolvedParams = await params; 
   const { locale } = resolvedParams;
@@ -35,11 +40,11 @@ export async function generateMetadata({ params }: any): Promise<Metadata> {
 }
 
 
-export default function IndexPage({ params }: { params: any }) {
+export default function IndexPage({ params }: { params: Usable<unknown> }) {
   const { locale } = use(params) as any;
   // Enable static rendering
   setRequestLocale(locale);
-  const t = useTranslations('HomePage');
+  //const t = useTranslations('HomePage');
   return (
     <div className="flex flex-col h-screen bg-black text-white overflow-hidden">
       {/* Video Section */}

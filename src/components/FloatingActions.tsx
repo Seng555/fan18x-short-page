@@ -1,6 +1,6 @@
 'use client';
 
-import { FaHeart, FaCommentDots, FaBookmark, FaShare } from 'react-icons/fa';
+import { FaHeart } from 'react-icons/fa';
 
 export default function FloatingActions() {
   return (

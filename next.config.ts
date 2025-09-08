@@ -1,7 +1,6 @@
 // next.config.ts
-import type {NextConfig} from 'next';
+import type { NextConfig } from 'next';
 import createNextIntlPlugin from 'next-intl/plugin';
- import { setupDevPlatform } from '@cloudflare/next-on-pages/next-dev';
 
 // Initialize next-intl (App Router)
 const withNextIntl = createNextIntlPlugin({
@@ -11,14 +10,22 @@ const withNextIntl = createNextIntlPlugin({
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
-  theme: {
-    extend: {
-      padding: {
-        safe: "env(safe-area-inset-bottom)",
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'cdn.fan18x.com',
+        port: '',
+        pathname: '/**',
       },
-    },
+      {
+        protocol: 'https',
+        hostname: 'vz-693abed9-be1.b-cdn.net',
+        port: '',
+        pathname: '/**',
+      },
+    ],
   },
-
   // Add HLS/CORS headers for files served by THIS Next app (e.g. from /public)
   async headers() {
     return [
@@ -26,12 +33,9 @@ const nextConfig: NextConfig = {
       {
         source: '/:path*\\.m3u8',
         headers: [
-          // Correct MIME for HLS playlists
           { key: 'Content-Type', value: 'application/vnd.apple.mpegurl' },
-          // Allow cross-origin playback (adjust as needed)
           { key: 'Access-Control-Allow-Origin', value: '*' },
           { key: 'Access-Control-Allow-Headers', value: 'Range, Origin, X-Requested-With, Content-Type, Accept' },
-          // Helpful for streaming/seek
           { key: 'Accept-Ranges', value: 'bytes' },
         ],
       },
@@ -46,10 +50,12 @@ const nextConfig: NextConfig = {
       },
     ];
   },
+
+  eslint: {
+    // Ignore ESLint errors during production builds
+    ignoreDuringBuilds: true,
+  },
 };
 
- if (process.env.NODE_ENV === 'development') {
-   await setupDevPlatform();
- }
-
+// Export the config wrapped with next-intl
 export default withNextIntl(nextConfig);

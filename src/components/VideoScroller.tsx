@@ -1,12 +1,13 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { useKeenSlider } from "keen-slider/react";
+import { KeenSliderInstance, useKeenSlider } from "keen-slider/react";
 import "keen-slider/keen-slider.min.css";
 import VideoPage from "./VideoPage";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { getRandomVideos } from "@/services/api.service";
+import Image from "next/image"
 
 
 const COOLDOWN_MS = 700;
@@ -14,32 +15,44 @@ const WHEEL_THRESHOLD = 50;
 const WINDOW = 1; // กี่สไลด์รอบๆ ที่อยากคงไว้เพื่อลดจอดำ (0 = เฉพาะ current)
 
 
-function wheelControls(slider: any) {
+export function wheelControls(slider: KeenSliderInstance) {
   let locked = false;
-  let accum = 0;
-  const unlock = () => setTimeout(() => { locked = false; accum = 0; }, COOLDOWN_MS);
+  let accumulatedDelta = 0;
 
+  const reset = () => {
+    locked = false;
+    accumulatedDelta = 0;
+  };
+
+  const unlock = () => setTimeout(reset, COOLDOWN_MS);
+
+  const handleWheel = (event: WheelEvent) => {
+    if (locked || !event.deltaY) return;
+
+    accumulatedDelta += event.deltaY;
+
+    if (accumulatedDelta > WHEEL_THRESHOLD) {
+      locked = true;
+      slider.next?.();
+      unlock();
+    } else if (accumulatedDelta < -WHEEL_THRESHOLD) {
+      locked = true;
+      slider.prev?.();
+      unlock();
+    }
+  };
   slider.on("created", () => {
-    const el = slider.container as HTMLElement;
-    if (!el) return; // <-- ป้องกัน null
-    el.addEventListener(
-      "wheel",
-      (e) => {
-        if (!e.deltaY || !slider) return; // <-- ป้องกัน undefined
-        accum += Number(e.deltaY);
-        if (locked) return;
-        if (accum > WHEEL_THRESHOLD) { locked = true; slider.next?.(); unlock(); }
-        else if (accum < -WHEEL_THRESHOLD) { locked = true; slider.prev?.(); unlock(); }
-      },
-      { passive: true }
-    );
+    const container = slider.container;
+    if (!container) return;
+
+    container.addEventListener("wheel", handleWheel, { passive: true });
   });
 }
 
 function Placeholder({ poster, title }: { poster: string; title: string }) {
   return (
     <div className="h-full w-full bg-black">
-      <img src={poster} alt={title} className="h-full w-full object-cover opacity-70" />
+      <Image src={poster} alt={title} width={400} height={400} className="h-full w-full object-cover opacity-70"  />
     </div>
   );
 }
@@ -109,7 +122,7 @@ export default function VideoScroller() {
 
         const lastIndex = videosRef.current - 1;
         console.log(idx, lastIndex);
-        
+
         if (idx === lastIndex) {
           fetchVideos();
         }
@@ -142,7 +155,7 @@ export default function VideoScroller() {
         {/* Logo */}
         <div className="flex items-center gap-2">
           <Link href="/" className="flex items-center">
-            <img src="/fan18x-logo.png" alt="Fan" className="h-10 w-auto cursor-pointer" />
+            <Image src="/fan18x-logo.png" width={400} height={400}  alt="Fan" className="h-10 w-auto cursor-pointer" />
           </Link>
         </div>
         {/* Tabs */}
