@@ -5,9 +5,6 @@ import Hls, { Level } from "hls.js";
 import { FaExpand } from "react-icons/fa";
 import FloatingActions from "./FloatingActions";
 
-export const config = {
-	runtime: 'edge',
-};
 
 
 type Props = {

@@ -7,9 +7,7 @@ import VideoPage from "./VideoPage";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { getRandomVideos } from "@/services/api.service";
-export const config = {
-	runtime: 'edge',
-};
+
 
 const COOLDOWN_MS = 700;
 const WHEEL_THRESHOLD = 50;
