@@ -52,7 +52,7 @@ export function wheelControls(slider: KeenSliderInstance) {
 function Placeholder({ poster, title }: { poster: string; title: string }) {
   return (
     <div className="h-full w-full bg-black">
-      <Image src={poster} alt={title} width={400} height={400} className="h-full w-full object-cover opacity-70"  />
+      <Image src={poster} alt={title} width={400} height={400} className="h-full w-full object-cover opacity-70" />
     </div>
   );
 }
@@ -155,12 +155,12 @@ export default function VideoScroller() {
         {/* Logo */}
         <div className="flex items-center gap-2">
           <Link href="/" className="flex items-center">
-            <Image src="/fan18x-logo.png" width={400} height={400}  alt="Fan" className="h-10 w-auto cursor-pointer" />
+            <Image src="/fan18x-logo.png" width={400} height={400} alt="Fan" className="h-10 w-auto cursor-pointer" />
           </Link>
         </div>
         {/* Tabs */}
         <nav className="flex items-center gap-6 text-white text-sm font-medium">
-          {["all", "videos", "image"].map((tab) => (
+          {["all", /*"videos", "image"*/].map((tab) => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
