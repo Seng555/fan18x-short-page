@@ -67,6 +67,7 @@ export default function VideoScroller() {
   const [videos, setVideos] = useState<Video[]>([])
   const [loding, setLoding] = useState(true)
   const videosRef = useRef(0);
+  const [readyId, setReadyId] = useState<string[]>([])
 
   useEffect(() => {
     videosRef.current = videos.length;
@@ -82,10 +83,13 @@ export default function VideoScroller() {
   // Get Videos 
   const fetchVideos = async () => {
     try {
-      const newVideos = await getRandomVideos();
+      const newVideos = await getRandomVideos(readyId);
       //console.log(newVideos);
-      
+
       setVideos(prev => [...prev, ...newVideos]);
+      // เก็บ _id ของวิดีโอใหม่เข้า readyId
+      const newIds = newVideos.map(v => v._id);
+      setReadyId(prev => [...prev, ...newIds]); // push ทุก id ลง state
     } catch (error) {
       console.error("Failed to fetch videos:", error);
     } finally {
@@ -119,9 +123,11 @@ export default function VideoScroller() {
         setShowHand(false);
 
         const lastIndex = videosRef.current - 1;
-        console.log(idx, lastIndex);
+        //console.log(idx, lastIndex);
 
         if (idx === lastIndex) {
+          // Reset if readyId > 100
+          setReadyId(prev => (prev.length >= 100 ? [] : prev));
           fetchVideos();
         }
       },
@@ -197,16 +203,16 @@ export default function VideoScroller() {
               const dist = Math.abs(idx - (active ?? 0));
               const keepMounted = dist <= WINDOW;
               //console.log(JSON.stringify(v));
-              
+
               return (
                 <div key={i} className="keen-slider__slide h-full w-full">
                   {keepMounted ? (
                     <VideoPage
                       videos={v.url}
-                      title={(v.title as any )[locale as any]}
+                      title={(v.title as any)[locale as any]}
                       poster={v.thumbnailUrl}
                       active={i === active}
-                      description={(v.title as any )[locale as any]}
+                      description={(v.title as any)[locale as any]}
                     />
                   ) : (
                     <Placeholder poster={v.thumbnailUrl} title={v.title?.en ?? ""} />

@@ -5,14 +5,19 @@ import axios from 'axios';
 /**
  * Fetch random videos from API and return sanitized Video[]
  */
-export async function getRandomVideos(): Promise<Video[]> {
+export async function getRandomVideos(readyId: string[]): Promise<Video[]> {
   try {
     const response = await axios.get<RandomVideosResponse>(
-      'https://api.fan18x.com/api/video/random'
+      'https://api.fan18x.com/api/video/random',
+      {
+        params: {
+          recentIds: readyId,  // ส่ง _id ของวิดีโอที่เพิ่งแสดง
+        }
+      }
     );
 
     const videos = response.data.data;
-    console.log(videos);
+    //console.log(videos);
     
     // sanitize title and uploadedBy
     const sanitized: Video[] = videos.map(v => ({
