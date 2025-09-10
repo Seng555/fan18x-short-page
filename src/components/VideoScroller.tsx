@@ -82,21 +82,16 @@ export default function VideoScroller() {
   const fetchVideos = async () => {
     try {
       const newVideos = await getRandomVideos();
-      setVideos(prev => {
-        const updated = [...prev, ...newVideos];
-        videosRef.current = updated.length;
-        // Refresh slider after state updates
-        setTimeout(() => {
-          slider?.current?.update(); // refresh keen-slider instance
-        }, 0);
-        return updated;
-      });
+      setVideos(prev => [...prev, ...newVideos]);
     } catch (error) {
       console.error("Failed to fetch videos:", error);
     } finally {
       if (loding) setLoding(false);
     }
   };
+
+
+
   useEffect(() => {
     fetchVideos();
   }, []); // [] = run once on mount
@@ -130,6 +125,13 @@ export default function VideoScroller() {
     },
     [wheelControls]
   );
+
+  // รีเฟรช slider ทุกครั้งที่ videos อัปเดต
+  useEffect(() => {
+    if (slider.current) {
+      slider.current.update();
+    }
+  }, [videos, slider]);
 
   // ให้เล่นเฉพาะ current (เผื่อมีวิดีโออื่นถูกค้าง)
   function playOnly(root: HTMLDivElement | null, activeIndex: number) {
