@@ -32,7 +32,7 @@ export default function VideoPage({
   const hideTimer = useRef<number | null>(null);
 
   const [playing, setPlaying] = useState(true);
-  const [muted, setMuted] = useState(true);
+  const [muted, setMuted] = useState(false);
   const [duration, setDuration] = useState(0);
   const [time, setTime] = useState(0);
   const [bufferedEnd, setBufferedEnd] = useState(0);
