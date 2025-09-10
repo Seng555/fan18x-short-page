@@ -12,7 +12,8 @@ export async function getRandomVideos(): Promise<Video[]> {
     );
 
     const videos = response.data.data;
-
+    console.log(videos);
+    
     // sanitize title and uploadedBy
     const sanitized: Video[] = videos.map(v => ({
       _id: v._id,

@@ -9,20 +9,21 @@ import FloatingActions from "./FloatingActions";
 
 type Props = {
   videos: string; // .m3u8 or .mp4
-  title?: string;
+  title: string;
   description?: string;
   poster?: string;
   active?: boolean;
   username?: string;
+ 
 };
 
 export default function VideoPage({
   videos,
-  title = "Sample TikTok-style Video",
+  title,
   description = "This is a sample caption for a TikTok-like video page.",
   poster = "/poster.jpg",
   active = true,
-  username = "@username",
+  username = "@admin"
 }: Props) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);

@@ -4,7 +4,7 @@ interface UploadedBy {
 }
 interface Video {
   _id: string;
-  title: { en?: string; th?: string }; // แนะนำให้ใช้ object ถ้า title มีหลายภาษา
+  title: { en: string; th: string }; // แนะนำให้ใช้ object ถ้า title มีหลายภาษา
   thumbnailUrl: string;
   previewUrl: string;
   url: string;

@@ -5,7 +5,7 @@ import { KeenSliderInstance, useKeenSlider } from "keen-slider/react";
 import "keen-slider/keen-slider.min.css";
 import VideoPage from "./VideoPage";
 import Link from "next/link";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { getRandomVideos } from "@/services/api.service";
 import Image from "next/image"
 
@@ -59,6 +59,7 @@ function Placeholder({ poster, title }: { poster: string; title: string }) {
 
 export default function VideoScroller() {
   const t = useTranslations('menu');
+  const locale = useLocale();
   const containerRef = useRef<HTMLDivElement>(null);
   const [active, setActive] = useState(0);
   const [activeTab, setActiveTab] = useState("all");
@@ -82,6 +83,8 @@ export default function VideoScroller() {
   const fetchVideos = async () => {
     try {
       const newVideos = await getRandomVideos();
+      //console.log(newVideos);
+      
       setVideos(prev => [...prev, ...newVideos]);
     } catch (error) {
       console.error("Failed to fetch videos:", error);
@@ -193,15 +196,17 @@ export default function VideoScroller() {
               const idx = i ?? 0;
               const dist = Math.abs(idx - (active ?? 0));
               const keepMounted = dist <= WINDOW;
-
+              //console.log(JSON.stringify(v));
+              
               return (
                 <div key={i} className="keen-slider__slide h-full w-full">
                   {keepMounted ? (
                     <VideoPage
                       videos={v.url}
-                      title={typeof v.title === 'object' ? v.title.en ?? v.title.th : v.title}
+                      title={(v.title as any )[locale as any]}
                       poster={v.thumbnailUrl}
                       active={i === active}
+                      description={(v.title as any )[locale as any]}
                     />
                   ) : (
                     <Placeholder poster={v.thumbnailUrl} title={v.title?.en ?? ""} />
