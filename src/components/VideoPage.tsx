@@ -14,7 +14,7 @@ type Props = {
   poster?: string;
   active?: boolean;
   username?: string;
- 
+
 };
 
 export default function VideoPage({
@@ -204,7 +204,8 @@ export default function VideoPage({
         className="h-full w-full object-contain bg-black cursor-pointer"
         onClick={togglePlay}
         controls={false}
-        muted={muted}
+        muted={muted || true} // ป้องกัน browser block auto play
+        autoPlay
       />
 
       {/* Play icon overlay */}
